@@ -40,6 +40,7 @@ public class Server {
         //while client request line is not empty
         String str;
         while((str = fromClient.readLine()) != null){
+            System.out.println("Got request from client: \"" + str + "\"");
             //if client says bye
             if(str == "bye") {
                 //terminate connection
