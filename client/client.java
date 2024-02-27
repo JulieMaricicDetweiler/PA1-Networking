@@ -28,15 +28,21 @@ public class client {
             while (true) {
                 System.out.print("Enter command (Joke 1/Joke 2/Joke 3/bye): ");
                 inputLine = scanner.nextLine();
-                if ("bye".equalsIgnoreCase(inputLine)) { //if command is bye then terminate
-                    out.println(inputLine); //Sending bye to server
+
+                if ("bye".equalsIgnoreCase(inputLine)) {
+                    out.println(inputLine);
                     System.out.println("Exiting.");
                     break;
                 }
-                out.println(inputLine); //sending user command to server
-                System.out.println("Server response: " + in.readLine());
+                out.println(inputLine);
+                String serverResponse;
+                while (!(serverResponse = in.readLine()).equals("END OF JOKE")) {
+                    System.out.println("Server response: " + serverResponse);
+                    if (serverResponse.startsWith("Error:")) {
+                        break;
+                    }
+                }
             }
-
         } catch (IOException e) { //catching exceptions and printing an error message
             System.out.println("Client Error: " + e.getMessage());
         }
