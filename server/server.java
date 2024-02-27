@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class server {
     public static void main(String[] args) {
@@ -43,18 +45,16 @@ public class server {
 
             String str;
             while ((str = fromClient.readLine()) != null) {
+                str = str.trim();
                 System.out.println("Got request from client: \"" + str + "\"");
-                if ("bye".equals(str)) {
+                if ("bye".equalsIgnoreCase(str)) {
                     toClient.println("disconnected");
                     break;
+                } else if (str.matches("Joke 1|Joke 2|Joke 3")) {
+                    int fileNumber = Integer.parseInt(str.substring(str.length() - 1));
+                    sendJoke(toClient, fileNumber);
                 } else {
-                    String jokePattern = "Joke [1-3]";
-                    if (!str.matches(jokePattern)) {
-                        toClient.println("Error: Bad Request. Please only enter one of the following options as your request: [Joke 1, Joke 2, Joke 3]");
-                    } else {
-                        int fileNumber = Integer.parseInt(String.valueOf(str.charAt(str.length() - 1)));
-                        sendJoke(toClient, fileNumber);
-                    }
+                    toClient.println("Error: Bad Request. Please only enter one of the following options as your request: [Joke 1, Joke 2, Joke 3]");
                 }
             }
             System.out.println("Closing connection...");
@@ -72,11 +72,13 @@ public class server {
             while ((joke = jokeReader.readLine()) != null) {
                 toClient.println(joke);
             }
+            toClient.println("END OF JOKE");
             jokeReader.close();
         } catch (FileNotFoundException e) {
             toClient.println("Joke file not found.");
         } catch (IOException e) {
             toClient.println("Error reading joke file.");
         }
+        toClient.flush();
     }
 }
