@@ -21,7 +21,7 @@ public class client {
              Scanner scanner = new Scanner(System.in)) { //Scanner to read user input
 
             // Initial server response (greeting)
-            System.out.println("Server says: " + in.readLine());
+            System.out.println("Recieved from server: " + in.readLine());
 
             // Interaction with the server until the user says bye
             String inputLine;
@@ -37,9 +37,15 @@ public class client {
                 out.println(inputLine);
                 String serverResponse;
                 while (!(serverResponse = in.readLine()).equals("END OF JOKE")) {
-                    System.out.println("Server response: " + serverResponse);
                     if (serverResponse.startsWith("Error:")) {
+                        System.out.println("Server response: " + serverResponse);
                         break;
+                    }
+                    else {
+                        String fileName = "joke" + inputLine.charAt(inputLine.length()-1) + ".txt";
+                        PrintWriter toFile = new PrintWriter(new FileWriter(fileName, true));
+                        toFile.println(serverResponse);
+                        toFile.close();
                     }
                 }
             }
